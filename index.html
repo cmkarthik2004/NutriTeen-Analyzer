@@ -1,0 +1,1919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriTeen - Advanced Teen Nutrition Analyzer</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-light: #4895ef;
+            --secondary: #3a0ca3;
+            --accent: #f72585;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4cc9f0;
+            --warning: #ffba08;
+            --danger: #f94144;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --smooth-transition: all 0.3s ease;
+            --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            --gradient-secondary: linear-gradient(135deg, var(--secondary) 0%, #560bad 100%);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4eaf1 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 25px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 35px 0;
+            background: var(--gradient-primary);
+            color: white;
+            border-radius: 20px;
+            margin-bottom: 35px;
+            box-shadow: var(--card-shadow);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            width: 250px;
+            height: 250px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            top: -125px;
+            right: -125px;
+        }
+        
+        header::after {
+            content: '';
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            bottom: -90px;
+            left: -90px;
+        }
+        
+        h1 {
+            font-size: 3.2rem;
+            margin-bottom: 12px;
+            font-weight: 800;
+            font-family: 'Montserrat', sans-serif;
+            position: relative;
+            z-index: 2;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .tagline {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            font-weight: 300;
+            position: relative;
+            z-index: 2;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            display: inline-block;
+            background: white;
+            color: var(--primary);
+            width: 85px;
+            height: 85px;
+            border-radius: 50%;
+            line-height: 85px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            transition: var(--smooth-transition);
+        }
+        
+        .logo:hover {
+            transform: rotate(15deg) scale(1.1);
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 35px;
+        }
+        
+        @media (max-width: 1100px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 35px;
+            transition: var(--smooth-transition);
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--gradient-primary);
+        }
+        
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+        }
+        
+        .card-title {
+            font-size: 1.7rem;
+            color: var(--primary);
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light-gray);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+        }
+        
+        .card-title i {
+            background: var(--gradient-primary);
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.05rem;
+        }
+        
+        label i {
+            color: var(--primary);
+            width: 25px;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 16px 18px;
+            border: 1px solid var(--light-gray);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: var(--smooth-transition);
+            background: white;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.03);
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.03);
+        }
+        
+        button {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 17px 28px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.05rem;
+            font-weight: 600;
+            transition: var(--smooth-transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.35);
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(67, 97, 238, 0.45);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #868e96 100%);
+            box-shadow: 0 8px 20px rgba(108, 117, 125, 0.35);
+        }
+        
+        .btn-secondary:hover {
+            box-shadow: 0 12px 25px rgba(108, 117, 125, 0.45);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.35);
+        }
+        
+        .btn-success:hover {
+            box-shadow: 0 12px 25px rgba(40, 167, 69, 0.45);
+        }
+        
+        .video-container {
+            position: relative;
+            width: 100%;
+            margin-bottom: 25px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        #video {
+            width: 100%;
+            border-radius: 15px;
+            background: #ddd;
+            display: block;
+            transform: scaleX(-1); /* Mirror for webcam */
+        }
+        
+        #canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: none;
+            transform: scaleX(-1); /* Mirror for webcam */
+        }
+        
+        .capture-btn {
+            display: block;
+            width: 100%;
+            margin-top: 20px;
+        }
+        
+        .results {
+            display: none;
+        }
+        
+        .risk-low {
+            color: #27ae60;
+        }
+        
+        .risk-medium {
+            color: #f39c12;
+        }
+        
+        .risk-high {
+            color: #e74c3c;
+        }
+        
+        .risk-badge {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            margin-left: 15px;
+            font-size: 1.1rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .risk-low-bg {
+            background: rgba(39, 174, 96, 0.15);
+        }
+        
+        .risk-medium-bg {
+            background: rgba(243, 156, 18, 0.15);
+        }
+        
+        .risk-high-bg {
+            background: rgba(231, 76, 60, 0.15);
+        }
+        
+        .chart-container {
+            height: 320px;
+            margin: 30px 0;
+        }
+        
+        .diet-plan {
+            background: linear-gradient(135deg, #e6f7ff 0%, #edf8ff 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 30px;
+            border-left: 5px solid var(--primary);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+        }
+        
+        .diet-plan h3 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.4rem;
+        }
+        
+        .food-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            transition: var(--smooth-transition);
+        }
+        
+        .food-item:hover {
+            background: rgba(255, 255, 255, 0.5);
+            padding-left: 10px;
+            border-radius: 8px;
+        }
+        
+        .food-item:last-child {
+            border-bottom: none;
+        }
+        
+        .nutrient-bar-container {
+            margin: 15px 0 25px 0;
+        }
+        
+        .nutrient-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .nutrient-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+        
+        .nutrient-value {
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 1.1rem;
+        }
+        
+        .nutrient-bar {
+            height: 22px;
+            background: var(--light-gray);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.08);
+        }
+        
+        .nutrient-fill {
+            height: 100%;
+            border-radius: 12px;
+            transition: width 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nutrient-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background-image: linear-gradient(
+                -45deg, 
+                rgba(255, 255, 255, 0.2) 25%, 
+                transparent 25%, 
+                transparent 50%, 
+                rgba(255, 255, 255, 0.2) 50%, 
+                rgba(255, 255, 255, 0.2) 75%, 
+                transparent 75%, 
+                transparent
+            );
+            z-index: 1;
+            background-size: 25px 25px;
+            animation: move 1s linear infinite;
+            border-radius: 12px;
+        }
+        
+        @keyframes move {
+            0% {
+                background-position: 0 0;
+            }
+            100% {
+                background-position: 25px 25px;
+            }
+        }
+        
+        .protein {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+        }
+        
+        .carbs {
+            background: linear-gradient(135deg, var(--warning) 0%, #ffd166 100%);
+        }
+        
+        .fats {
+            background: linear-gradient(135deg, var(--danger) 0%, #ff6b6b 100%);
+        }
+        
+        .vitamins {
+            background: linear-gradient(135deg, var(--success) 0%, #72ddf7 100%);
+        }
+        
+        .minerals {
+            background: linear-gradient(135deg, var(--secondary) 0%, #560bad 100%);
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 30px;
+            color: var(--gray);
+            font-size: 0.95rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 极 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            position: relative;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 25px;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--light-gray);
+            z-index: 1;
+            border-radius: 5px;
+        }
+        
+        .progress-bar {
+            position: absolute;
+            top: 25px;
+            left: 0;
+            height: 5px;
+            background: var(--gradient-primary);
+            z-index: 2;
+            border-radius: 5px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+        
+        .step {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: white;
+            border: 5px solid var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--gray);
+            position: relative;
+            z-index: 3;
+            transition: var(--smooth-transition);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        .step.active {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        .step-label {
+            position: absolute;
+            top: 55px;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            font-size: 0.9rem;
+            color: var(--gray);
+            font-weight: 500;
+            transition: var(--smooth-transition);
+        }
+        
+        .step.active .step-label {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .message {
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+        }
+        
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            border-left: 5px solid #c62828;
+        }
+        
+        .success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-left: 5px solid #2e7d32;
+        }
+        
+        .section-divider {
+            height: 2px;
+            background: linear-gradient(to right, transparent, var(--light-gray), transparent);
+            margin: 30px 0;
+        }
+        
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            margin-left: 5px;
+            color: var(--primary);
+            cursor: help;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 220px;
+            background-color: var(--dark);
+            color: white;
+            text-align: center;
+            border-radius: 8px;
+            padding: 12px;
+            position: absolute;
+            z-index: 10;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.9rem;
+            font-weight: normal;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 极.15);
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 8px 20px rgba(67, 97, 238, 0.35);
+            }
+            极% {
+                transform: scale(1.05);
+                box-shadow: 0 12px 25px rgba(67, 97, 238, 0.5);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 8px 20px rgba(67, 97, 238, 0.35);
+            }
+        }
+        
+        .bmi-indicator {
+            margin: 20px 0;
+            padding: 15px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        .bmi-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 10px 0;
+        }
+        
+        .bmi-category {
+            font-weight: 600;
+            padding: 8px 15px;
+            border-radius: 50px;
+            display: inline-block;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .face-analysis-result {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 15px;
+            background: #f8f9fa;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .malnutrition-indicators {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .indicator {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            width: 140px;
+            transition: var(--smooth-transition);
+        }
+        
+        .indicator:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .indicator i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .indicator-value {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin: 5px 0;
+        }
+        
+        .healthy {
+            color: #27ae60;
+        }
+        
+        .moderate {
+            color: #f39c12;
+        }
+        
+        .severe {
+            color: #e74c3c;
+        }
+        
+        .analysis-section {
+            margin: 25px 0;
+        }
+        
+        .analysis-section h4 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .assessment-score {
+            text-align: center;
+            margin: 20px 极;
+            padding: 15px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .score-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin: 10px 0;
+        }
+        
+        .score-label {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .indicators-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .indicator-item {
+            padding: 12px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .indicator-status {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        /* Report styling for PDF generation */
+        .report-container {
+            padding: 30px;
+            background: white;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .report-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--light-gray);
+        }
+        
+        .report-logo {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .report-title {
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .report-section {
+            margin-bottom: 25px;
+        }
+        
+        .report-section-title {
+            color: var(--primary);
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--light-gray);
+            margin-bottom: 15px;
+        }
+        
+        .nutrient-score {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        
+        .score-low {
+            background: rgba(231, 76, 60, 0.15);
+            color: #e74c3c;
+        }
+        
+        .score-medium {
+            background: rgba(243, 156, 18, 0.15);
+            color: #f39c12;
+        }
+        
+        .score-high {
+            background: rgba(39, 174, 96, 0.15);
+            color: #27ae60;
+        }
+        
+        .report-chart-container {
+            height: 300px;
+            margin: 20px 0;
+        }
+        
+        .report-food-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .report-footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--light-gray);
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .footer {
+    text-align: center;
+    margin-top: 50px;
+    padding: 30px;
+    color: var(--gray);
+    font-size: 0.95rem;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05); /* Fixed the invalid character */
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-apple-alt"></i>
+            </div>
+            <h1>NutriTeen Analyzer</h1>
+            <p class="tagline">Advanced nutrition analysis with facial assessment for teenagers</p>
+        </header>
+        
+        <div class="progress-steps">
+            <div class="progress-bar" id="progressBar"></div>
+            <div class="step active" id="step1">
+                1
+                <span class="step-label">Information</span>
+            </div>
+            <div class="step" id="step2">
+                2
+                <span class="step-label">Analysis</span>
+            </div>
+            <div class="step" id="step3">
+                3
+                <span class="step-label">Results</span>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="left-column">
+                <div class="card">
+                    <h2 class="card-title">
+                        <i class="fas fa-user-circle"></i>
+                        Health Information
+                    </h2>
+                    <form id="healthForm">
+                        <div class="form-group">
+                            <label for="age">
+                                <i class="fas fa-birthday-cake"></i>
+                                Age
+                            </label>
+                            <input type="number" id="age" min="10" max="19" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="gender">
+                                <i class="fas fa-venus-mars"></i>
+                                Gender
+                            </label>
+                            <select id="gender" required>
+                                <option value="">Select Gender</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="height">
+                                <i class="fas fa-ruler-vertical"></i>
+                                Height (cm)
+                            </label>
+                            <input type="number" id="height" min="100" max="200" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="weight">
+                                <i class="fas fa-weight"></i>
+                                Weight (kg)
+                            </label>
+                            <input type="number" id="weight" min="25" max="100" required>
+                        </div>
+                        
+                        <div class="section-divider"></div>
+                        
+                        <div class="form-group">
+                            <label>
+                                <i class="fas fa-apple-alt"></i>
+                                How often do you eat fruits?
+                                <span class="tooltip">
+                                    <i class="fas fa-question-circle"></i>
+                                    <span class="tooltiptext">Frequency of fruit consumption affects vitamin levels</span>
+                                </span>
+                            </label>
+                            <select id="fruits" required>
+                                <option value="">Select Frequency</option>
+                                <option value="3">Daily</option>
+                                <option value="2">3-4 times a week</option>
+                                <option value="1">Rarely</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>
+                                <i class="fas fa-carrot"></i>
+                                How often do you eat vegetables?
+                            </label>
+                            <select id="vegetables" required>
+                                <option value="">Select Frequency</option>
+                                <option value="3">Daily</option>
+                                <option value="2">3-4 times a week</option>
+                                <option value="1">Rarely</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>
+                                <i class="fas fa-drumstick-bite"></i>
+                                How often do you eat protein sources?
+                                <span class="tooltip">
+                                    <i class="fas fa-question-circle"></i>
+                                    <span class="tooltiptext">Meat, eggs, legumes, dairy products</span>
+                                </span>
+                            </label>
+                            <select id="proteins" required>
+                                <option value="">Select Frequency</option>
+                                <option value="3">Daily</option>
+                                <option value="2">3-4 times a week</option>
+                                <option value="1">Rarely</option>
+                            </select>
+                        </div>
+                        
+                        <div class="section-divider"></div>
+                        
+                        <div class="form-group">
+                            <label>
+                                <i class="fas fa-tired"></i>
+                                How often do you experience fatigue?
+                            </label>
+                            <select id="fatigue" required>
+                                <option value="">Select Frequency</option>
+                                <option value="1">Rarely</option>
+                                <option value="2">Sometimes</option>
+                                <option value="3">Often</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>
+                                <i class="fas fa-hand-sparkles"></i>
+                                How would you describe your skin condition?
+                            </label>
+                            <select id="skin" required>
+                                <option value="">Select Condition</option>
+                                <option value="1">Healthy</option>
+                                <option value="2">Dry sometimes</option>
+                                <option value="3">Often dry or with issues</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>
+                                <i class="fas fa-head-side-cough"></i>
+                                How often do you get sick?
+                            </label>
+                            <select id="sickness" required>
+                                <option value="">Select Frequency</option>
+                                <option value="1">Rarely</option>
+                                <option value="2">Sometimes</option>
+                                <option value="3">Often</option>
+                            </select>
+                        </div>
+                        
+                        <button type="submit" class="pulse">
+                            <i class="fas fa-chart-line"></i>
+                            Analyze Nutrition
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="card">
+                    <h2 class="card-title">
+                        <i class="fas fa-camera"></i>
+                        Facial Analysis
+                    </h2>
+                    <p>Allow camera access to detect signs of nutritional deficiencies through facial analysis</p>
+                    
+                    <div class="video-container">
+                        <video id="video" width="100%" height="300" autoplay></video>
+                        <canvas id="canvas" width="640" height="480"></canvas>
+                    </div>
+                    
+                    <button id="capture" class="capture-btn">
+                        <i class="fas fa-camera-retro"></i>
+                        Capture & Analyze
+                    </button>
+                    
+                    <div id="faceMessage"></div>
+                    
+                    <div class="face-analysis-result" id="faceAnalysisResult" style="display: none;">
+                        <h4><i class="fas fa-diagnoses"></i> Facial Analysis Results</h4>
+                        
+                        <div class="assessment-score">
+                            <div class="score-label">Nutritional Assessment Score</div>
+                            <div class="score-value" id="assessmentScore">0</div>
+                            <div id="assessmentText">No analysis performed yet</div>
+                        </div>
+                        
+                        <div class="indicators-grid">
+                            <div class="indicator-item">
+                                <div><i class="fas fa-face-smile"></i> Skin Health</div>
+                                <div class="indicator-status risk-low-bg" id="skinHealth">Good</div>
+                            </div>
+                            <div class="indicator-item">
+                                <div><i class="fas fa-eye"></i> Eye Vitality</div>
+                                <div class="indicator-status risk-medium-bg" id="eyeVitality">Normal</div>
+                            </div>
+                            <div class="indicator-item">
+                                <div><i class="fas fa-lips"></i> Lip Condition</div>
+                                <div class="indicator-status risk-high-bg" id="lipCondition">Healthy</div>
+                            </div>
+                            <div class="indicator-item">
+                                <div><i class="fas fa-project-diagram"></i> Face Symmetry</div>
+                                <div class="indicator-status risk-low-bg" id="faceSymmetry">Good</div>
+                            </div>
+                            <div class="indicator-item">
+                                <div><i class="fas fa-palette"></i> Complexion</div>
+                                <div class="indicator-status risk-low-bg" id="complexion">Normal</div>
+                            </div>
+                            <div class="indicator-item">
+                                <div><i class="fas fa-weight"></i> Facial Structure</div>
+                                <div class="indicator-status risk-medium-bg" id="facialStructure">Normal</div>
+                            </div>
+                        </div>
+                        
+                        <div class="message" id="facialAssessmentMessage">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Facial analysis provides indicators of potential nutritional issues. For accurate diagnosis, consult a healthcare professional.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="right-column">
+                <div class="card results" id="resultsCard">
+                    <h2 class="card-title">
+                        <i class="fas fa-clipboard-list"></i>
+                        Analysis Results
+                    </h2>
+                    
+                    <div id="riskLevel">
+                        <h3>Nutrition Risk: <span id="riskText" class="risk-badge risk-medium-bg">Calculating...</span></h3>
+                    </div>
+                    
+                    <div class="bmi-indicator">
+                        <div>Your Body Mass Index</div>
+                        <div class="bmi-value" id="bmiValue">0.0</div>
+                        <div class="bmi-category risk-low-bg" id="bmiCategory">Calculate</div>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <canvas id="nutritionChart"></canvas>
+                    </div>
+                    
+                    <div class="analysis-section">
+                        <h4><i class="fas fa-chart-bar"></i> Nutrient Levels</h4>
+                        
+                        <div class="nutrient-bar-container">
+                            <div class="nutrient-info">
+                                <div class="nutrient-label">
+                                    <i class="fas fa-dumbbell" style="color: var(--primary);"></i>
+                                    Protein
+                                </div>
+                                <div class="nutrient-value" id="proteinValue">0%</div>
+                            </div>
+                            <div class="nutrient-bar">
+                                <div class="nutrient-fill protein" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="nutrient-bar-container">
+                            <div class="nutrient-info">
+                                <div class="nutrient-label">
+                                    <i class="fas fa-bread-slice" style="color: var(--warning);"></i>
+                                    Carbohydrates
+                                </div>
+                                <div class="nutrient-value" id="carbsValue">0%</div>
+                            </div>
+                            <div class="nutrient-bar">
+                                <div class="nutrient-fill carbs" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="nutrient-bar-container">
+                            <div class="nutrient-info">
+                                <div class="nutrient-label">
+                                    <i class="fas fa-oil-can" style="color: var(--danger);"></i>
+                                    Fats
+                                </div>
+                                <div class="nutrient-value" id="fatsValue">0%</div>
+                            </div>
+                            <div class="nutrient-bar">
+                                <div class="nutrient-fill fats" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="nutrient-bar-container">
+                            <div class="nutrient-info">
+                                <div class="nutrient-label">
+                                    <i class="fas fa-pills" style="color: var(--success);"></i>
+                                    Vitamins
+                                </div>
+                                <div class="nutrient-value" id="vitaminsValue">0%</div>
+                            </div>
+                            <div class="nutrient-bar">
+                                <div class="nutrient-fill vitamins" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="nutrient-bar-container">
+                            <div class="nutrient-info">
+                                <div class="nutrient-label">
+                                    <i class="fas fa-gem" style="color: var(--secondary);"></i>
+                                    Minerals
+                                </div>
+                                <div class="nutrient-value" id="mineralsValue">0%</div>
+                            </div>
+                            <div class="nutrient-bar">
+                                <div class="nutrient-fill minerals" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="diet-plan">
+                        <h3><i class="fas fa-utensils"></i> Personalized Diet Suggestions</h3>
+                        <div id="dietSuggestions">
+                            <p>Your personalized diet plan will appear here after analysis.</p>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button id="downloadReport" class="btn-success">
+                            <i class="fas fa-download"></i>
+                            Download Report
+                        </button>
+                        <button id="analyzeAgain" class="btn-secondary">
+                            <i class="fas fa-redo"></i>
+                            Analyze Again
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>NutriTeen Analyzer - Helping teens maintain a balanced diet and detect nutritional issues early</p>
+            <p>Note: This is a simulation for educational purposes. Consult a healthcare professional for medical advice.</p>
+        </div>
+    </div>
+
+    <!-- Hidden container for report generation -->
+    <div id="reportContent" style="display: none;">
+        <div class="report-container">
+            <div class="report-header">
+                <div class="report-logo">
+                    <i class="fas fa-apple-alt"></i>
+                </div>
+                <h2 class="report-title">NutriTeen Nutrition Analysis Report</h2>
+                <p>Generated on <span id="reportDate"></span></p>
+            </div>
+            
+            <div class="report-section">
+                <h3 class="report-section-title">Personal Information</h3>
+                <div id="reportPersonalInfo"></div>
+            </div>
+            
+            <div class="report-section">
+                <h3 class="report-section-title">Assessment Results</h3>
+                <div id="reportAssessment"></div>
+            </div>
+            
+            <div class="report-section">
+                <h3 class="report-section-title">Nutrition Analysis</h3>
+                <div class="report-chart-container">
+                    <canvas id="reportChart"></canvas>
+                </div>
+                <div id="reportNutrientLevels"></div>
+            </div>
+            
+            <div class="report-section">
+                <h3 class="report-section-title">Diet Plan & Recommendations</h3>
+                <div id="reportDietPlan"></div>
+            </div>
+            
+            <div class="report-footer">
+                <p>This report was generated by NutriTeen Analyzer. For medical advice, please consult a healthcare professional.</p>
+                <p>© 2023 NutriTeen Analyzer</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- The rest of the HTML remains the same -->
+
+<!-- The rest of the HTML remains the same -->
+
+<!-- The rest of the HTML remains the same -->
+
+<script>
+    // Store analysis data for report generation
+    let currentAnalysisData = null;
+    let facialAnalysisData = null;
+    
+    // Form submission
+    document.getElementById('healthForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        updateProgress(2);
+        setTimeout(analyzeNutrition, 800);
+    });
+    
+    // Download report button
+    document.getElementById('downloadReport').addEventListener('click', function() {
+        generateReport();
+    });
+    
+    // Analyze again button
+    document.getElementById('analyzeAgain').addEventListener('click', function() {
+        document.getElementById('resultsCard').style.display = 'none';
+        facialAnalysisData = null;
+        document.getElementById('faceAnalysisResult').style.display = 'none';
+        document.getElementById('faceMessage').innerHTML = '';
+        updateProgress(1);
+    });
+    
+    // Face detection
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const context = canvas.getContext('2d');
+    const captureButton = document.getElementById('capture');
+    const faceMessage = document.getElementById('faceMessage');
+    const faceAnalysisResult = document.getElementById('faceAnalysisResult');
+    
+    // Access webcam
+    navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+    .then(function(stream) {
+        video.srcObject = stream;
+    })
+    .catch(function(err) {
+        console.log("An error occurred: " + err);
+        faceMessage.innerHTML = "<div class='message error'><i class='fas fa-exclamation-circle'></i> Cannot access camera: " + err.message + "</div>";
+    });
+    
+    // Capture image
+    captureButton.addEventListener('click', function() {
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        canvas.style.display = 'block';
+        
+        // Show loading state
+        captureButton.innerHTML = "<div class='loading'></div> Analyzing...";
+        captureButton.disabled = true;
+        
+        // Convert to base64 for sending to server
+        const imageData = canvas.toDataURL('image/jpeg');
+        
+        // Send to server for face detection and analysis
+        fetch('/detect-face', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ image: imageData })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                faceMessage.innerHTML = `<div class='message success'><i class='fas fa-check-circle'></i> ${data.face_count} face(s) detected and analyzed.</div>`;
+                
+                // Store facial analysis data for report
+                facialAnalysisData = data;
+                
+                // Show processed image
+                const img = new Image();
+                img.src = data.processed_image;
+                img.onload = function() {
+                    context.clearRect(0, 0, canvas.width, canvas.height);
+                    context.drawImage(img, 0, 0, canvas.width, canvas.height);
+                };
+                
+                // Update facial analysis results
+                document.getElementById('assessmentScore').textContent = data.assessment_score;
+                document.getElementById('assessmentText').textContent = data.nutritional_assessment;
+
+                
+                // Update individual indicators
+                if (data.nutritional_indicators) {
+                    document.getElementById('skinHealth').textContent = data.nutritional_indicators.skin_health;
+                    document.getElementById('eyeVitality').textContent = data.nutritional_indicators.eye_vitality;
+                    document.getElementById('lipCondition').textContent = data.nutritional_indicators.lip_condition;
+                    document.getElementById('faceSymmetry').textContent = data.nutritional_indicators.face_symmetry;
+                    document.getElementById('complexion').textContent = data.nutritional_indicators.complexion;
+                    document.getElementById('facialStructure').textContent = data.nutritional_indicators.facial_structure;
+                    
+                    // Update indicator colors based on status
+                    updateIndicatorColor('skinHealth', data.nutritional_indicators.skin_health);
+                    updateIndicatorColor('eyeVitality', data.nutritional_indicators.eye_vitality);
+                    updateIndicatorColor('lipCondition', data.nutritional_indicators.lip_condition);
+                    updateIndicatorColor('faceSymmetry', data.nutritional_indicators.face_symmetry);
+                    updateIndicatorColor('complexion', data.nutritional_indicators.complexion);
+                    updateIndicatorColor('facialStructure', data.nutritional_indicators.facial_structure);
+                }
+                
+                faceAnalysisResult.style.display = 'block';
+            } else {
+                faceMessage.innerHTML = `<div class='message error'><i class='fas fa-exclamation-circle'></i> Face detection failed: ${data.error}</div>`;
+            }
+            
+            captureButton.innerHTML = "<i class='fas fa-camera-retro'></i> Capture & Analyze";
+            captureButton.disabled = false;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            faceMessage.innerHTML = `<div class='message error'><i class='fas fa-exclamation-circle'></i> Error communicating with server.</div>`;
+            captureButton.innerHTML = "<i class='fas极-camera-retro'></i> Capture & Analyze";
+            captureButton.disabled = false;
+        });
+    });
+    
+    // Helper function to update indicator colors
+    function updateIndicatorColor(elementId, value) {
+        const element = document.getElementById(elementId);
+        element.className = 'indicator-status ';
+        
+        if (value === 'Good' || value === 'Healthy' || value === 'Normal') {
+            element.classList.add('risk-low-bg');
+        } else if (value === 'Fair' || value === 'Moderate' || value === 'Tired') {
+            element.classList.add('risk-medium-bg');
+        } else {
+            element.classList.add('risk-high-bg');
+        }
+    }
+    
+    // Update progress bar and steps
+    function updateProgress(step) {
+        document.querySelectorAll('.step').forEach((s, i) => {
+            if (i < step) {
+                s.classList.add('active');
+            } else {
+                s.classList.remove('active');
+            }
+        });
+        
+        // Update progress bar width
+        const progressBar = document.getElementById('progressBar');
+        progressBar.style.width = `${(step-1) * 50}%`;
+    }
+    
+    // Nutrition analysis function
+    function analyzeNutrition() {
+        // Get form values
+        const age = parseInt(document.getElementById('age').value);
+        const gender = document.getElementById('gender').value;
+        const height = parseInt(document.getElementById('height').value);
+        const weight = parseInt(document.getElementById('weight').value);
+        const fruits = parseInt(document.getElementById('fruits').value);
+        const vegetables = parseInt(document.getElementById('vegetables').value);
+        const proteins = parseInt(document.getElementById('proteins').value);
+        const fatigue = parseInt(document.getElementById('fatigue').value);
+        const skin = parseInt(document.getElementById('skin').value);
+        const sickness = parseInt(document.getElementById('sickness').value);
+        
+        // Prepare data to send
+        const requestData = {
+            age, gender, height, weight, fruits, vegetables, 
+            proteins, fatigue, skin, sickness
+        };
+        
+        // Include facial analysis data if available
+        if (facialAnalysisData) {
+            requestData.facial_analysis = facialAnalysisData;
+        }
+        
+        // Send data to server
+        fetch('/analyze', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert('Error: ' + data.error);
+                return;
+            }
+            
+            // Store data for report generation
+            currentAnalysisData = data;
+            currentAnalysisData.personalInfo = {
+                age, gender, height, weight, fruits, vegetables, 
+                proteins, fatigue, skin, sickness
+            };
+            
+            // Store facial analysis data if available
+            if (facialAnalysisData) {
+                currentAnalysisData.facialAnalysis = facialAnalysisData;
+            }
+            
+            // Update UI with comprehensive results
+            document.getElementById('riskText').textContent = data.risk_level;
+            document.getElementById('riskText').className = `risk-badge ${
+                data.risk_level === 'Low Risk' ? 'risk-low-bg' : 
+                data.risk_level === 'Medium Risk' ? 'risk-medium-bg' : 'risk-high-bg'
+            }`;
+            
+            // Add comprehensive assessment
+            const riskContainer = document.getElementById('riskLevel');
+            riskContainer.innerHTML = `
+                <h3>Nutrition Risk: <span id="riskText" class="risk-badge ${data.risk_level === 'Low Risk' ? 'risk-low-bg' : data.risk_level === 'Medium Risk' ? 'risk-medium-bg' : 'risk-high-bg'}">${data.risk_level}</span></h3>
+                <p><strong>Overall Assessment:</strong> ${data.overall_assessment}</p>
+                <p><strong>Comprehensive Score:</strong> ${Math.round(data.comprehensive_score)}/100</p>
+            `;
+            
+            // Update BMI display
+            document.getElementById('bmiValue').textContent = data.bmi;
+            
+            // Set BMI category
+            const bmiCategory = document.getElementById('bmiCategory');
+            if (data.bmi < 18.5) {
+                bmiCategory.textContent = 'Underweight';
+                bmiCategory.className = 'bmi-category risk-high-bg';
+            } else if (data.bmi < 25) {
+                bmiCategory.textContent = 'Normal weight';
+                bmiCategory.className = 'bmi-category risk-low-bg';
+            } else if (data.bmi < 30) {
+                bmiCategory.textContent = 'Overweight';
+                bmiCategory.className = 'bmi-category risk-medium-bg';
+            } else {
+                bmiCategory.textContent = 'Obese';
+                bmiCategory.className = 'bmi-category risk-high-bg';
+            }
+            
+            // Update nutrient bars
+            animateValue('proteinValue', 0, data.protein, 1000);
+            animateValue('carbsValue', 0, data.carbs, 1000);
+            animateValue('fatsValue', 0, data.fats, 1000);
+            animateValue('vitaminsValue', 0, data.vitamins, 1000);
+            animateValue('mineralsValue', 0, data.minerals, 1000);
+            
+            setTimeout(function() {
+                document.querySelector('.protein').style.width = data.protein + '%';
+                document.querySelector('.carbs').style.width = data.carbs + '%';
+                document.querySelector('.fats').style.width = data.fats + '%';
+                document.querySelector('.vitamins').style.width = data.vitamins + '%';
+                document.querySelector('.minerals').style.width = data.minerals + '%';
+            }, 100);
+            
+            // Create nutrition chart
+            createNutritionChart(data.protein, data.carbs, data.fats, data.vitamins, data.minerals);
+            
+            // Generate diet suggestions (including facial analysis feedback)
+            generateDietSuggestions(data.protein, data.vitamins, data.minerals, data.risk_score, data.bmi, data.facial_feedback, data.facial_impact);
+            
+            // Show results
+            document.getElementById('resultsCard').style.display = 'block';
+            updateProgress(3);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error communicating with server.');
+        });
+    }
+    
+    // Animate value counting up
+    function animateValue(id, start, end, duration) {
+        const obj = document.getElementById(id);
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            obj.innerHTML = Math.floor(progress * (end - start) + start) + '%';
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            }
+        };
+        window.requestAnimationFrame(step);
+    }
+    
+    // Create nutrition chart
+    function createNutritionChart(protein, carbs, fats, vitamins, minerals) {
+        const ctx = document.getElementById('nutritionChart').getContext('2d');
+        
+        if (window.nutritionChartInstance) {
+            window.nutritionChartInstance.destroy();
+        }
+        
+        window.nutritionChartInstance = new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: ['Protein', 'Carbs', 'Fats', 'Vitamins', 'Minerals'],
+                datasets: [{
+                    label: 'Your Levels',
+                    data: [protein, carbs, fats, vitamins, minerals],
+                    backgroundColor: 'rgba(67, 97, 238, 0.2)',
+                    borderColor: 'rgba(67, 97, 238, 1)',
+                    pointBackgroundColor: 'rgba(67, 97, 238, 1)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgba(67, 97, 238, 1)',
+                    pointRadius: 5,
+                    pointHoverRadius: 7
+                }]
+            },
+            options: {
+                scales: {
+                    r: {
+                        angleLines: {
+                            display: true,
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        },
+                        pointLabels: {
+                            font: {
+                                size: 14,
+                                weight: '600'
+                            },
+                            color: '#495057'
+                        },
+                        suggestedMin: 0,
+                        suggestedMax: 100,
+                        ticks: {
+                            stepSize: 20,
+                            backdropColor: 'transparent'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            font: {
+                                size: 12,
+                                weight: '600'
+                            }
+                        }
+                    }
+                },
+                elements: {
+                    line: {
+                        tension: 0.2
+                    }
+                }
+            }
+        });
+    }
+    
+    // Generate diet suggestions
+    function generateDietSuggestions(proteinScore, vitaminsScore, mineralsScore, riskScore, bmi, facialFeedback = [], facialImpact = {}) {
+        let suggestions = '';
+        
+        // Add comprehensive assessment
+        suggestions += `
+            <div class="message success">
+                <i class="fas fa-info-circle"></i>
+                <div>
+                    <strong>Comprehensive Nutritional Assessment:</strong>
+                    <p>Based on your health information ${facialAnalysisData ? 'and facial analysis' : ''}, here are personalized recommendations:</p>
+                </div>
+            </div>
+        `;
+        
+        // Add facial feedback if available
+        if (facialFeedback && facialFeedback.length > 0) {
+            suggestions += '<div class="message warning">';
+            suggestions += '<i class="fas fa-exclamation-triangle"></i>';
+            suggestions += '<div><strong>Facial Analysis Insights:</strong><ul>';
+            facialFeedback.forEach(feedback => {
+                suggestions += `<li>${feedback}</li>`;
+            });
+            
+            // Add specific impact details
+            if (Object.keys(facialImpact).length > 0) {
+                suggestions += '<li><strong>Impact on Nutrition Scores:</strong><ul>';
+                for (const [indicator, impact] of Object.entries(facialImpact)) {
+                    if (typeof impact === 'object') {
+                        for (const [nutrient, adjustment] of Object.entries(impact)) {
+                            suggestions += `<li>${indicator.replace('_', ' ')} affected ${nutrient} score by ${adjustment} points</li>`;
+                        }
+                    } else {
+                        suggestions += `<li>${indicator.replace('_', ' ')} affected vitamin score by ${impact} points</li>`;
+                    }
+                }
+                suggestions += '</ul></li>';
+            }
+            
+            suggestions += '</ul></div></div>';
+        }
+        
+        // Protein suggestions
+        if (proteinScore < 70) {
+            suggestions += '<div class="food-item"><div><i class="fas fa-egg" style="color: var(--primary);"></i> <strong>Protein:</strong></div><div>Increase intake with eggs, chicken, fish, lentils</div></div>';
+        } else {
+            suggestions += '<div class="food-item"><div><i class="fas fa-egg" style="color: var(--primary);"></i> <strong>Protein:</strong></div><div>Your protein intake is good. Maintain it.</div></div>';
+        }
+        
+        // Vitamin suggestions
+        if (vitaminsScore < 70) {
+            suggestions += '<div class="food-item"><div><i class="fas fa-apple-alt" style="color: var(--success);"></i> <strong>Vitamins:</strong></div><div>Eat more fruits and vegetables daily</div></div>';
+        } else {
+            suggestions += '<div class="food-item"><div><i class="fas fa-apple-alt" style="color: var(--success);"></i> <strong>Vitamins:</strong></div><div>Your vitamin intake is sufficient</div></div>';
+        }
+        
+        // Mineral suggestions
+        if (mineralsScore < 70) {
+            suggestions += '<div class="food-item"><div><i class="fas fa-seedling" style="color: var(--secondary);"></i> <strong>Minerals:</strong></div><div>Add nuts, seeds, whole grains to your diet</div></div>';
+        } else {
+            suggestions += '<div class="food-item"><div><i class="fas fa-seedling" style="color: var(--secondary);"></i> <strong>Minerals:</strong></div><div>Your mineral levels are good</div></div>';
+        }
+        
+        // BMI-based suggestions
+        if (bmi < 18.5) {
+            suggestions += '<div class="food-item"><div><i class="fas fa-weight" style="color: var(--danger);"></i> <strong>Weight:</strong></div><div>You are underweight. Increase calorie intake with healthy foods.</div></div>';
+        } else if (bmi > 25) {
+            suggestions += '<div class="food-item"><div><i class="fas fa-weight" style="color: var(--warning);"></i> <strong>Weight:</strong></div><div>You are overweight. Focus on balanced diet and exercise.</div></div>';
+        } else {
+            suggestions += '<div class="food-item"><div><i class="fas fa-weight" style="color: var(--success);"></i> <strong>Weight:</strong></div><div>Your weight is in a healthy range. Maintain it.</div></div>';
+        }
+        
+        // Add sample meal plan
+        suggestions += `
+            <div class="section-divider"></div>
+            <h4><i class="fas fa-list-alt"></i> Sample Daily Plan:</h4>
+            <div class="food-item">
+                <div><i class="fas fa-sun"></i> Breakfast</div>
+                <div>Oatmeal with fruits and nuts</div>
+            </div>
+            <div class="food-item">
+                <div><i class="fas fa-utensils"></i> Lunch</div>
+                <div>Grilled chicken with vegetables and rice</div>
+            </div>
+            <div class="food-item">
+                <div><i class="fas fa-apple-alt"></i> Snack</div>
+                <div>Yogurt with berries</div>
+            </div>
+            <div class="food-item">
+                <div><i class="fas fa-moon"></i> Dinner</div>
+                <div>Fish with quinoa and steamed vegetables</div>
+            </div>
+        `;
+        
+        document.getElementById('dietSuggestions').innerHTML = suggestions;
+        currentAnalysisData.dietSuggestions = suggestions;
+    }
+    
+// Generate and download report
+    function generateReport() {
+        if (!currentAnalysisData) {
+            alert('No analysis data available. Please complete the analysis first.');
+            return;
+        }
+        
+        // Update report date
+        const now = new Date();
+        document.getElementById('reportDate').textContent = now.toLocaleDateString('en-US', {
+            year: 'numeric', month: 'long', day: 'numeric'
+        });
+        
+        // Add personal information
+        const personalInfo = currentAnalysisData.personalInfo;
+        const frequencyMap = {1: 'Rarely', 2: 'Sometimes', 3: 'Daily'};
+        const conditionMap = {1: 'Healthy', 2: 'Dry sometimes', 3: 'Often dry or with issues'};
+        
+        document.getElementById('reportPersonalInfo').innerHTML = `
+            <p><strong>Age:</strong> ${personalInfo.age} years</p>
+            <p><strong>Gender:</strong> ${personalInfo.gender}</p>
+            <p><strong>Height:</strong> ${personalInfo.height} cm</p>
+            <p><strong>Weight:</strong> ${personalInfo.weight} kg</p>
+            <p><strong>Fruit consumption:</strong> ${frequencyMap[personalInfo.fruits]}</p>
+            <p><strong>Vegetable consumption:</strong> ${frequencyMap[personalInfo.vegetables]}</p>
+            <p><strong>Protein consumption:</strong> ${frequencyMap[personalInfo.proteins]}</p>
+            <p><strong>Fatigue frequency:</strong> ${frequencyMap[personalInfo.fatigue]}</p>
+            <p><strong>Skin condition:</strong> ${conditionMap[personalInfo.skin]}</p>
+            <p><strong>Sickness frequency:</strong> ${frequencyMap[personalInfo.sickness]}</p>
+        `;
+        
+        // Add assessment results
+        document.getElementById('reportAssessment').innerHTML = `
+            <p><strong>Nutrition Risk Level:</strong> <span class="risk-badge ${currentAnalysisData.risk_level === 'Low Risk' ? 'risk-low-bg' : currentAnalysisData.risk_level === 'Medium Risk' ? 'risk-medium-bg' : 'risk-high-bg'}">${currentAnalysisData.risk_level}</span></p>
+            <p><strong>Overall Assessment:</strong> ${currentAnalysisData.overall_assessment}</p>
+            <p><strong>Comprehensive Health Score:</strong> ${Math.round(currentAnalysisData.comprehensive_score)}/100</p>
+            <p><strong>BMI:</strong> ${currentAnalysisData.bmi} (${document.getElementById('bmiCategory').textContent})</p>
+            <p><strong>Risk Score:</strong> ${Math.round(currentAnalysisData.risk_score)}/100</p>
+        `;
+        
+        // Add facial analysis results if available
+        if (currentAnalysisData.facialAnalysis) {
+            const facialData = currentAnalysisData.facialAnalysis;
+            document.getElementById('reportAssessment').innerHTML += `
+                <h4 style="margin-top: 20px;">Facial Analysis Results</h4>
+                <p><strong>Faces Detected:</strong> ${facialData.face_count}</p>
+                <p><strong>Nutritional Assessment Score:</strong> ${facialData.assessment_score}</p>
+                <p><strong>Assessment:</strong> ${facialData.nutritional_assessment}</p>
+                ${facialData.nutritional_indicators ? `
+                <p><strong>Skin Health:</strong> ${facialData.n极ritional_indicators.skin_health}</p>
+                <p><strong>Eye Vitality:</strong> ${facialData.nutritional_indicators.eye_vitality}</p>
+                <p><strong>Lip Condition:</strong> ${facialData.nutritional_indicators.lip_condition}</p>
+                <p><strong>Face Symmetry:</strong> ${facialData.nutritional_indicators.face_symmetry}</p>
+                <p><strong>Complexion:</strong> ${facialData.nutritional_indicators.complexion}</p>
+                <p><strong>Facial Structure:</strong> ${facialData.nutritional_indicators.facial_structure}</p>
+                ` : ''}
+            `;
+        }
+        
+        // Add facial feedback if available
+        if (currentAnalysisData.facial_feedback && currentAnalysisData.facial_feedback.length > 0) {
+            document.getElementById('reportAssessment').innerHTML += `
+                <h4 style="margin-top: 20px;">Facial Analysis Insights</h4>
+                <ul>
+            `;
+            currentAnalysisData.facial_feedback.forEach(feedback => {
+                document.getElementById('reportAssessment').innerHTML += `<li>${feedback}</li>`;
+            });
+            document.getElementById('reportAssessment').innerHTML += `</ul>`;
+        }
+        
+        // Add nutrient levels
+        document.getElementById('reportNutrientLevels').innerHTML = `
+            <p><strong>Protein:</strong> ${currentAnalysisData.protein}% <span class="nutrient-score ${getScoreClass(currentAnalysisData.protein)}">${getScoreText(currentAnalysisData.protein)}</span></p>
+            <p><strong>Carbohydrates:</strong> ${currentAnalysisData.carbs}% <span class="nutrient-score ${getScoreClass(currentAnalysisData.carbs)}">${getScoreText(currentAnalysisData.carbs)}</span></p>
+            <p><strong>Fats:</strong> ${currentAnalysisData.fats}% <span class="nutrient-score ${getScoreClass(currentAnalysisData.fats)}">${getScoreText(currentAnalysisData.fats)}</span></p>
+            <p><strong>Vitamins:</strong> ${currentAnalysisData.vitamins}% <span class="nutrient-score ${getScoreClass(currentAnalysisData.vitamins)}">${getScoreText(currentAnalysisData.vitamins)}</span></p>
+            <p><strong>Minerals:</strong> ${currentAnalysisData.minerals}% <span class="nutrient-score ${getScoreClass(currentAnalysisData.minerals)}">${getScoreText(currentAnalysisData.minerals)}</span></p>
+        `;
+        
+        // Add diet plan
+        document.getElementById('reportDietPlan').innerHTML = currentAnalysisData.dietSuggestions;
+        
+        // Create chart for report
+        const reportCtx = document.getElementById('reportChart').getContext('2d');
+        if (window.reportChartInstance) {
+            window.reportChartInstance.destroy();
+        }
+        
+        window.reportChartInstance = new Chart(reportCtx, {
+            type: 'radar',
+            data: {
+                labels: ['Protein', 'Carbs', 'Fats', 'Vitamins', 'Minerals'],
+                datasets: [{
+                    label: 'Nutrition Levels',
+                    data: [
+                        currentAnalysisData.protein, 
+                        currentAnalysisData.carbs, 
+                        currentAnalysisData.fats, 
+                        currentAnalysisData.vitamins, 
+                        currentAnalysisData.minerals
+                    ],
+                    backgroundColor: 'rgba(67, 97, 238, 0.2)',
+                    borderColor: 'rgba(67, 97, 238, 1)',
+                    pointBackgroundColor: 'rgba(67, 97, 238, 1)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgba(67, 97, 238, 1)',
+                    pointRadius: 4
+                }]
+            },
+            options: {
+                scales: {
+                    r: {
+                        angleLines: {
+                            display: true,
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        },
+                        suggestedMin: 0,
+                        suggestedMax: 100,
+                        ticks: {
+                            stepSize: 20,
+                            backdropColor: 'transparent'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            font: {
+                                size: 12,
+                                weight: '600'
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Generate PDF
+        const element = document.getElementById('reportContent');
+        const opt = {
+            margin: 10,
+            filename: 'nutriteen-report-' + now.getTime() + '.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        // Delay to let charts/images render before capture
+        setTimeout(() => {
+            html2pdf().set(opt).from(element).save();
+        }, 500);
+    }
+
+    // Helper function to get score class
+    function getScoreClass(score) {
+        if (score < 40) return 'score-low';
+        if (score < 70) return 'score-medium';
+        return 'score-high';
+    }
+    
+    // Helper function to get score text
+    function getScoreText(score) {
+        if (score < 40) return 'Low';
+        if (score < 70) return 'Medium';
+        return 'Good';
+    }
+    
+    // Initialize with dummy data for demonstration
+    window.onload = function() {
+        // Pre-fill form with sample data for demo
+        document.getElementById('age').value = 16;
+        document.getElementById('gender').value = 'male';
+        document.getElementById('height').value = 175;
+        document.getElementById('weight').value = 60;
+        document.getElementById('fruits').value = 2;
+        document.getElementById('vegetables').value = 2;
+        document.getElementById('proteins').value = 3;
+        document.getElementById('fatigue').value = 2;
+        document.getElementById('skin').value = 1;
+        document.getElementById('sickness').value = 1;
+        
+        // Initialize progress
+        updateProgress(1);
+    };
+</script>
+
+<!-- The rest of the HTML remains the same -->
+<!-- The rest of the HTML remains the same -->
+</body>
+</html>

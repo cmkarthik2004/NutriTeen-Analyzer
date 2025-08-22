@@ -1,0 +1,7 @@
+Flask==2.3.3
+Flask-Cors==4.0.0
+numpy==1.24.3
+opencv-python==4.8.0.76
+Pillow==10.0.0
+reportlab==4.0.4
+gunicorn==21.2.0
